@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
@@ -10,7 +11,7 @@ namespace AzureFunctionsWithTwilioBindings
     public class SendMultilpeAsyncSmsTimer
     {
         [FunctionName("SendMultilpeAsyncSmsTimer")]
-        public void Run(
+        public async Task Run(
             [TimerTrigger("*/15 * * * * *")]TimerInfo myTimer, 
             ILogger log, 
             [TwilioSms(AccountSidSetting = "TwilioAccountSid",AuthTokenSetting = "TwilioAuthToken")]
@@ -28,8 +29,9 @@ namespace AzureFunctionsWithTwilioBindings
                     From = new PhoneNumber(fromPhoneNumber),
                     Body = $"Hello from SendMultilpeAsyncSmsTimer #{i}!"
                 };
-                messageCollector.AddAsync(message);
+                await messageCollector.AddAsync(message);
             }
+            await messageCollector.FlushAsync();
         }
     }
 }

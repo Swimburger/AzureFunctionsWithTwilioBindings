@@ -14,17 +14,24 @@ namespace AzureFunctionsWithTwilioBindings
             [TimerTrigger("*/15 * * * * *")]TimerInfo myTimer, 
             ILogger log, 
             [TwilioSms(AccountSidSetting = "TwilioAccountSid",AuthTokenSetting = "TwilioAuthToken")]
-            out CreateMessageOptions message
+            out CreateMessageOptions message1, 
+            [TwilioSms(AccountSidSetting = "TwilioAccountSid",AuthTokenSetting = "TwilioAuthToken")]
+            out CreateMessageOptions message2
         )
         {
             log.LogInformation($"SendSmsTimerOut executed at: {DateTime.Now}");
 
             string toPhoneNumber = Environment.GetEnvironmentVariable("ToPhoneNumber", EnvironmentVariableTarget.Process);
             string fromPhoneNumber = Environment.GetEnvironmentVariable("FromPhoneNumber", EnvironmentVariableTarget.Process);
-            message = new CreateMessageOptions(new PhoneNumber(toPhoneNumber))
+            message1 = new CreateMessageOptions(new PhoneNumber(toPhoneNumber))
             {
                 From = new PhoneNumber(fromPhoneNumber),
-                Body = "Hello from SendSmsTimerOut!"
+                Body = "Hello from SendSmsTimerOut message 1!"
+            };            
+            message2 = new CreateMessageOptions(new PhoneNumber(toPhoneNumber))
+            {
+                From = new PhoneNumber(fromPhoneNumber),
+                Body = "Hello from SendSmsTimerOut message 2!"
             };
         }
     }
